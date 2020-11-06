@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>DC55630F-4F87-4875-BDCF-C595C895EBF0</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>EEIC_Bachelor_Motion_for_students</RootNamespace>
+    <AssemblyName>Power Pmac Project Template</AssemblyName>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <IPAddress>192.168.0.200</IPAddress>
+    <TelnetPassword>deltatau</TelnetPassword>
+    <TelnetPort>22</TelnetPort>
+    <TelnetUser>root</TelnetUser>
+    <FTPPassword>ftp</FTPPassword>
+    <FTPPort>21</FTPPort>
+    <FTPUser>ftp</FTPUser>
+    <PVarStart>8192</PVarStart>
+    <QVarStart>1024</QVarStart>
+    <MVarStart>8192</MVarStart>
+    <UserBuffer>1</UserBuffer>
+    <ProgramBuffer>16</ProgramBuffer>
+    <TableBuffer>1</TableBuffer>
+    <LookAheadBuffer>16</LookAheadBuffer>
+    <SymbolsBufSize>1</SymbolsBufSize>
+    <CpuAffinityServoTask>1</CpuAffinityServoTask>
+    <CpuAffinityRtiTask>1</CpuAffinityRtiTask>
+    <CpuAffinityBackgroundTask>0</CpuAffinityBackgroundTask>
+    <CpuAffinityRtpmacMainTask>0</CpuAffinityRtpmacMainTask>
+    <EtherCatStackType>1</EtherCatStackType>
+    <RealtimeRoutinesBuildFlag>0</RealtimeRoutinesBuildFlag>
+    <TemplateVersion>2</TemplateVersion>
+    <ProjppRunAtOption>No</ProjppRunAtOption>
+    <DownloadCSoruce>No</DownloadCSoruce>
+    <EncryptionOption>Do Not Encrypt Any File</EncryptionOption>
+    <ProjppTimeoutPeriod>300000</ProjppTimeoutPeriod>
+    <ProjectExportLevel>0</ProjectExportLevel>
+    <Name>EEIC_Bachelor_Motion_for_students</Name>
+    <PPCPUType>ppc405</PPCPUType>
+    <DownloadSystemSetupConfig>No</DownloadSystemSetupConfig>
+    <UseNewNamingFormat>No</UseNewNamingFormat>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>Bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>Bin\Release\</OutputPath>
+  </PropertyGroup>
+  <UsingTask AssemblyFile="$(CompileTaskPath)\PPMAC460CompileTask.dll" TaskName="PPMAC460CompileTask.CompileTask" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C Language\Libraries\ctrl\ctrl_chirp.c">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="C Language\Libraries\ctrl\ctrl_func.c">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="C Language\Libraries\ctrl\ctrl_step.c">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="C Language\Libraries\hardw_cdrv\hardw_cdrv.c">
+      <SubType>Code</SubType>
+    </Compile>
+    <Folder Include="C Language\" />
+    <Folder Include="C Language\Background Programs\" />
+    <Folder Include="C Language\Background Programs\capp1" />
+    <Compile Include="C Language\Background Programs\capp1\capp1.c" />
+    <Content Include="C Language\Background Programs\capp1\capp1.h" />
+    <Folder Include="C Language\CPLCs\" />
+    <Folder Include="C Language\CPLCs\bgcplc00" />
+    <Content Include="C Language\CPLCs\bgcplc00\bgcplc.c" />
+    <Folder Include="C Language\CPLCs\rticplc" />
+    <Compile Include="C Language\CPLCs\rticplc\rticplc.c" />
+    <Folder Include="C Language\Include" />
+    <Content Include="C Language\CPLCs\rticplc\rticplc.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Include\pp_proj.h" />
+    <Folder Include="C Language\Libraries" />
+    <Folder Include="C Language\Libraries\ctrl\" />
+    <Folder Include="C Language\Libraries\hardw_cdrv\" />
+    <Folder Include="C Language\Realtime Routines" />
+    <Content Include="C Language\Libraries\ctrl\ctrl_chirp.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Libraries\ctrl\ctrl_func.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Libraries\ctrl\ctrl_step.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Libraries\hardw_cdrv\hardw_cdrv.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Realtime Routines\usrcode.c" />
+    <Content Include="C Language\Realtime Routines\usrcode.h" />
+    <Folder Include="Configuration" />
+    <Folder Include="System" />
+    <Folder Include="System\Coordinate Systems" />
+    <Folder Include="System\CPU" />
+    <Folder Include="System\Encoder" />
+    <Folder Include="System\EtherCAT" />
+    <Folder Include="System\Motors" />
+    <None Include="Configuration\pp_custom_save.cfg" />
+    <None Include="Configuration\pp_custom_save.tpl" />
+    <None Include="Configuration\pp_disable.txt" />
+    <None Include="Configuration\pp_inc_disable.txt" />
+    <None Include="Configuration\pp_inc_startup.txt" />
+    <None Include="Configuration\pp_save.cfg" />
+    <None Include="Configuration\pp_startup.txt" />
+    <None Include="Configuration\systemsetup.cfg" />
+    <Folder Include="Documentation" />
+    <Content Include="Documentation\note.txt" />
+    <Folder Include="Log" />
+    <None Include="Configuration\systemsetup.cfg" />
+    <None Include="Log\pp_error.log" />
+    <None Include="Log\pp_error_hist.log" />
+    <None Include="Log\pp_proj.log" />
+    <Folder Include="PMAC Script Language\" />
+    <Folder Include="PMAC Script Language\Global Includes" />
+    <None Include="PMAC Script Language\Global Includes\global definitions.pmh">
+      <DisplayOrder>0</DisplayOrder>
+      <DisplayOrder>0</DisplayOrder>
+    </None>
+    <Folder Include="PMAC Script Language\Kinematic Routines" />
+    <Folder Include="PMAC Script Language\Libraries" />
+    <None Include="PMAC Script Language\Libraries\subprog1.pmc">
+      <DisplayOrder>0</DisplayOrder>
+      <DisplayOrder>0</DisplayOrder>
+    </None>
+    <Folder Include="PMAC Script Language\Motion Programs" />
+    <None Include="PMAC Script Language\Motion Programs\prog1.pmc">
+      <DisplayOrder>0</DisplayOrder>
+      <DisplayOrder>0</DisplayOrder>
+    </None>
+    <Folder Include="PMAC Script Language\PLC Programs" />
+    <None Include="PMAC Script Language\PLC Programs\plc1.plc">
+      <DisplayOrder>0</DisplayOrder>
+      <DisplayOrder>0</DisplayOrder>
+    </None>
+    <Folder Include="System" />
+    <Folder Include="System\Hardware" />
+    <Folder Include="System\CPU" />
+    <None Include="System\CPU\System.cpusetup" />
+    <Folder Include="System\Motors" />
+    <Folder Include="System\Coordinate Systems" />
+    <Folder Include="System\Encoder" />
+    <None Include="System\CPU\System.cpusetup" />
+    <None Include="System\Encoder\Encoder.encsetup" />
+    <Folder Include="System\EtherCAT" />
+    <None Include="System\Encoder\Encoder.encsetup" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
+  <Target Name="Build">
+    <CompileTask Files="@(Compile)" OutputPath="$(OutputPath)" DebugSymbols="$(DebugSymbols)" ProjectPath="$(MSBuildProjectDirectory)" PPCPUType="$(PPCPUType)" RealtimeRoutinesBuildFlag="$(RealtimeRoutinesBuildFlag)" CustomCompileFlags="@(CustomCompile)" CustomLibraryFlags="@(CustomLibrary)" CustomMakeFilePath="@(CustomMakeFilePath)" />
+  </Target>
+  <Target Name="Rebuild">
+    <CompileTask Files="@(Compile)" OutputPath="$(OutputPath)" DebugSymbols="$(DebugSymbols)" ProjectPath="$(MSBuildProjectDirectory)" PPCPUType="$(PPCPUType)" RealtimeRoutinesBuildFlag="$(RealtimeRoutinesBuildFlag)" CustomCompileFlags="@(CustomCompile)" CustomLibraryFlags="@(CustomLibrary)" CustomMakeFilePath="@(CustomMakeFilePath)" />
+  </Target>
+  <Target Name="Clean">
+    <RemoveDir Directories="$(OutputPath)" />
+    <MakeDir Directories="$(OutputPath)" />
+  </Target>
+</Project>

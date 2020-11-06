@@ -1,0 +1,88 @@
+/////////////////////////////////////////////////////////
+// Encode Conversion Table(ECT)の設定
+// PMACに入力されるエンコーダを、位置に変換する仕組み
+//
+// デフォルト設定でA/B相を読む設定がされている
+// 
+// EncTable[1] : CH1に接続されているA/B相の設定 
+// EncTable[2] : CH2に接続されているA/B相の設定 
+//////////////////////////////////////////////////////////
+
+EncTable[1].type        = 1
+EncTable[1].index1      = 0
+EncTable[1].index2      = 0
+EncTable[1].index3      = 0
+EncTable[1].index4      = 0
+EncTable[1].index5      = 0
+EncTable[1].pEnc1       = Sys.pushm
+EncTable[1].pEnc        = Gate3[0].Chan[0].ServoCapt.a	//CH1に入力されたA/B相を読む
+EncTable[1].MaxDelta    = 0
+EncTable[1].ScaleFactor = 0.00390625	// Gate3[0].Chan[0].ServoCaptのデータは内部で256倍に内挿されている		
+										// この値に　1/256 = 0.00390625　をかけて1パルス単位に変換 
+EncTable[1].index6      = 0
+
+///////////////////////////////////////////////////////////
+// モータのフィードバックデータを、どこから読むか設定
+// 通常、上記のECTからデータを読む
+///////////////////////////////////////////////////////////
+
+// モータ1のフィードバックアドレスの設定
+Motor[1].pEnc  = EncTable[1].a	//デフォルト。EncTable[1]から、「位置」データを読む
+Motor[1].pEnc2 = EncTable[1].a	//デフォルト。EncTable[1]から、「速度」データを読む
+
+Sys.WpKey = $AAAAAAAA
+Gate3[0].Chan[0].EncCtrl = 7	// CH1 A/B相デコード指定 7=4逓倍 CCW. =3で、4逓倍 CW
+Gate3[0].Chan[1].EncCtrl = 7	// CH2 A/B相デコード指定 7=4逓倍 CCW. =3で、4逓倍 CW
+Sys.WpKey = $0
+///////////////////////////////////////////////////////////
+// アナログトルク出力設定
+////////////////////////////////////////////////////////////
+Sys.WpKey = $AAAAAAAA
+Gate3[0].Chan[0].OutputMode = $3	// CH1の出力をアナログ出力モード。モータ1への出力
+Gate3[0].Chan[0].PackOutData = 0 //p.278 ゲート 3 チャンネルの出力データ圧縮が無効
+Gate3[0].DacStrobe=$FFFF0000
+Motor[1].MaxDac = 32767  			// PMACからの最大出力電圧　32767 = 10v  16384 = 5v
+
+///////////////////////////////////////////////////////////
+// sampling clock
+////////////////////////////////////////////////////////////
+// 1ms
+Gate3[0].PhaseFreq = 1000
+Gate3[0].ServoClockDiv = 0
+Sys.PhaseOverServoPeriod = 1
+Sys.ServoPeriod = 1
+
+Sys.WpKey = $0
+
+Motor[1].ServoCtrl = 1		//モータ1有効
+
+//Motor[1].PosSf=1/312500; 
+Motor[1].PosSf=1; 
+//Motor[1].MasterPos=0;
+//Motor[1].Servo.MaxPosErr=312500;
+
+
+ // motor unit is 1; the position signal from ENC directly goes to PMAc
+
+//Motor[1].pAdc=0;   // no current loop
+
+
+Motor[1].PhaseCtrl=0;//no phase ctrl
+
+// for giving cmd directly into analog out
+
+Motor[1].pDac=Gate3[0].Chan[0].Dac[0].a;// Gate3[].[].Dac0.a means velocity/torque type command 
+
+
+// fir giving cmd from control algorithm
+// Motor[1].pDac=Sys.Ddata[100].a;
+
+Motor[1].plimits=0;  // no limit sensor??
+
+&1     // 1 coordinate system
+#1->312500X   // motor 1 X axis
+
+
+
+
+
