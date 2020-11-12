@@ -1,7 +1,7 @@
 %% identification_chirp.m
 %% 学生に共有
-% date: 2020.08.18 
-% author: shirato
+% date: 2020.11.12
+% author: shirato, miyoshi
 % 位置で取ると不安定なので，電圧から速度までのシステム同定
 % 時間，カウント位置，速度，角度の位置，入力電圧（トルク指令値）を測定。入力電圧（トルク指令値）から速度までをシステム同定。
 % その後ctrldesign_PID.mで設計
@@ -10,7 +10,7 @@ close all;
 clear;
 
 %% １回ですべての周波数を同定する場合
-load('./matfiles/1105_chirp_1Hz_200Hz_30s.mat');
+load('./matfiles/1109_chirp_1Hz_200Hz_30s.mat');
 fs = 1000;
 tperiod = 30; 
 
@@ -26,19 +26,22 @@ y = velocity_chirp;
 y_detrend = detrend(y); %detrend
 [txy,f] = tfestimate(x,y_detrend,fs*tperiod,[],[],fs); %detrend
 G1 = frd(txy,f,'FrequencyUnit','Hz');
-
-
 figure; bode(G1,2*pi*[1, 200])
+
+G2 = G1;
+% fittingがうまく行かない場合，次の行のコメントを外し，frdデータを見て形がきれいな周波数部分を取り出す
+G2 = fselect(G1,0,100);
+
 % expfig(['plot/chirp/chirp_0p1Hz_500Hz_G1Bode'],'-png','-pdf','-emf');
 
 % from Torque reference to velocity, 1 order system
-Gest = tfest(G1,1,0);
+Gest = tfest(G2,1);
 Gfit = tf(Gest.Numerator,Gest.Denominator);
 s = tf('s');
 Gfit.name = 'fitting';%Gfit.name = sprintf('$ 7.263e06/(s + 20.15)$');
  %Gfit2.sys = Gfit.sys * exp(-0.002*s);%actually, there must be a time delay
  %Gfit2.name = 'fitting (w delay)';
-figure; bode(G1,2*pi*[1,200]); hold on; bode(Gfit,2*pi*[1,200]);legend;
+figure; bode(G2, 2 * pi * [1,200]); hold on; bode(Gfit, 2 * pi * [1,200]); legend;
 %expfig(['plot/chirp/chirp_0p1Hz_500Hz_GcatGfitBode'],'-png','-pdf','-emf');
 
 [cxy,f] = mscohere(x,y_detrend,fs*tperiod,[],[],fs);
