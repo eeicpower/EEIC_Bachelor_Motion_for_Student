@@ -1,4 +1,4 @@
-/************************************************************************************
+﻿/************************************************************************************
 FUNCTION MODULE
 ----------------------
 Descr.:		setting gain of FF controller 
@@ -41,6 +41,7 @@ void	func_TF1StateInit( volatile TF1_INF *stpInf);
 void	func_TF2StateInit( volatile TF2_INF *stpInf );
 
 void	func_CpidParaInit( volatile TF2_INF *stpInf );
+
 void	func_CpdParaInit(volatile TF1_INF *stpInf);
 void	func_LPFParaInit( volatile TF2_INF *stpInf );
 void	func_LFmathParaInit( volatile TF2_INF *stpInf);
@@ -54,4 +55,5 @@ void	func_INVQmathParaInit(volatile TF2_INF *stpInf);
 double 	func_TF1Exe( double dIn, volatile TF1_INF *stpInf );
 double 	func_TF2Exe( double dIn, volatile TF2_INF *stpInf );
 double	func_TF2Exe_AntiWindUp( double dIn, volatile TF2_INF *stpInf, double dLimit_low, double dLimit_high);
+//double  func_TFOUT( double dIn[],double dOut[], volatile CTRL_dob *stpInf);
 #endif

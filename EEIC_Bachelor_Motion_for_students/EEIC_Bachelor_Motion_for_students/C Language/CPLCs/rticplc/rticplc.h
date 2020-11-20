@@ -1,4 +1,4 @@
-#ifndef _RTICPLC_H
+﻿#ifndef _RTICPLC_H
 #define _RTICPLC_H
 
 #define STEP_REF_AMP_DEG (90)

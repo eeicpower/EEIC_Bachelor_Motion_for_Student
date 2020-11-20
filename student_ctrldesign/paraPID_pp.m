@@ -2,7 +2,7 @@ function C = paraPID_pp(Ctype,P,p1,p2,p3,p4)
 if order(P) ~= 2
     error('Nominal plant should be second order');
 end
-if nargin < 4 %?“ü?—Ê“I˜¢”
+if nargin < 4 %?å…¥?é‡çš„ä¸ªæ•°
    p2 = p1; 
    p3 = p1; 
    p4 = p1; 
@@ -55,7 +55,7 @@ end
 %% previous code
 % p2z=poly2sym(num);
 % p2p=poly2sym(den);
-% clop=fliplr(coeffs(eq,x));% ‹ŽæŒn”
+% clop=fliplr(coeffs(eq,x));% æ±‚å–ç³»æ•°
 % zp2=sym2poly(p2z);
 % pp2=sym2poly(p2p);
 
@@ -64,6 +64,6 @@ end
 % b0=clop(1)/pp2(1);
 % b1=clop(2)/pp2(1)-pp2(2)*b0/pp2(1);
 % a0=clop(3)/zp2-pp2(2)*b1/zp2;
-% K = double([a0 a1 a2 b0 b1]); % C‰ü?—Ê?Œ^
+% K = double([a0 a1 a2 b0 b1]); % ä¿®æ”¹?é‡?åž‹
 % C=(K(1)*s^2 + K(2)*s + K(3))/(K(4)*s^2 +K(5)*s);
 % C = pid(C);

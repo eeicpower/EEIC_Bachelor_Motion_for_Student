@@ -1,4 +1,4 @@
-#include <gplib.h>   // Global Gp Shared memory pointer
+﻿#include <gplib.h>   // Global Gp Shared memory pointer
 //----------------------------------------------------------------------------------
 // pp_proj.h is the C header for accessing PMAC Global, CSGlobal, Ptr vars
 // _PPScriptMode_ for Pmac Script like access global & csglobal
@@ -25,6 +25,8 @@ void ctrl_chirp(double t_ch, double *out){
 	while(t_ch > t_c){
 		t_ch -=t_c;
 	}
-	// write your chirp here!!
-	*out = 0.0;
+	// ここにチャープの式を書く。
+	// チャープに使う定数はctrl_chirp.hに定義されているので、そちらも参照せよ。
+	*out=0;
+
 }

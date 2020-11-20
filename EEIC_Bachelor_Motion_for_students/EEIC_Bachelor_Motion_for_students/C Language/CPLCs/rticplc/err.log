@@ -1,15 +1,15 @@
 rticplc.c: In function 'realtimeinterrupt_plcc':
-rticplc.c:154:27: warning: passing argument 2 of 'func_TF2Exe' from incompatible pointer type
+rticplc.c:169:27: warning: passing argument 2 of 'func_TF2Exe' from incompatible pointer type
    qout = func_TF2Exe( v1, &LFmath);
                            ^
 In file included from rticplc.c:17:0:
-../../Libraries/ctrl/ctrl_func.h:55:9: note: expected 'volatile struct TF2_INF *' but argument is of type 'volatile struct TF2_INF (*)[1]'
+../../Libraries/ctrl/ctrl_func.h:56:9: note: expected 'volatile struct TF2_INF *' but argument is of type 'volatile struct TF2_INF (*)[1]'
  double  func_TF2Exe( double dIn, volatile TF2_INF *stpInf );
          ^
-rticplc.c:155:48: warning: passing argument 2 of 'func_TF2Exe' from incompatible pointer type
+rticplc.c:170:48: warning: passing argument 2 of 'func_TF2Exe' from incompatible pointer type
    invqout = func_TF2Exe(pshm->Motor[1].ActPos, &INVQmath);
                                                 ^
 In file included from rticplc.c:17:0:
-../../Libraries/ctrl/ctrl_func.h:55:9: note: expected 'volatile struct TF2_INF *' but argument is of type 'volatile struct TF2_INF (*)[1]'
+../../Libraries/ctrl/ctrl_func.h:56:9: note: expected 'volatile struct TF2_INF *' but argument is of type 'volatile struct TF2_INF (*)[1]'
  double  func_TF2Exe( double dIn, volatile TF2_INF *stpInf );
          ^

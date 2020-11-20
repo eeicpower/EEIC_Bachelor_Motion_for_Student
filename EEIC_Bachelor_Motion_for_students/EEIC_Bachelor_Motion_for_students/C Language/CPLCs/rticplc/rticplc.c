@@ -1,4 +1,4 @@
-#include <gplib.h>
+﻿#include <gplib.h>
 #include <stdio.h>
 #include <dlfcn.h>
 //----------------------------------------------------------------------------------
@@ -50,14 +50,16 @@ extern volatile TF2_INF		INVQmath[1];
 int flg_chirp = 0;
 int jj = 0;
 
+// メインルーチン（タイマー割り込みにより一定時間隔で呼ばれる）
 void realtimeinterrupt_plcc()
 {	
 	//don't change
 	volatile struct GateArray3  *MyGate3;//
 	MyGate3 = GetGate3MemPtr(0); //
 
+	// P変数の定義 P変数のみをPMACと送受信できる？？
 	flag_exptype=pshm->P[50];
-	pshm->P[1]=pshm->Motor[1].ActVel;//velocity[number/s]
+	pshm->P[1]=pshm->Motor[1].ActVel;//not velocity but difference of ActPos[number]
 	pshm->P[2]=ref_out;//reference [number]
 	pshm->P[3]=pshm->Motor[1].PosError;//error [number]
 	pshm->P[5] = ctrl_cmd;
@@ -70,8 +72,8 @@ void realtimeinterrupt_plcc()
 	pshm->P[99]=counter;
 	pshm->P[100] = initial_pos_num;
 	
-
 	//initialize shirato added for FB control
+	// 1回目だけ実行される初期化ルーチン
 	if(flag_init == 0){
 		func_TF2StateInit( &gstCpidInf[0] ); //initialize of Cfb
 		func_CpidParaInit( &gstCpidInf[0]); //setting parameters of Cfb
@@ -94,15 +96,15 @@ void realtimeinterrupt_plcc()
 		initial_pos_num = pshm->Motor[1].ActPos;//num
 	}
  
- 
+	// P50 = 0: 制御入力0を出力する。（＝何もしない）
 	if(flag_exptype == 0){//no output
 		//output
 		ctrl_cmd = 0.0;
 		hardw_vref(0); //change ctrl_cmd[V] to -32768-32767 and output
-	
 	}
 
-	if(flag_exptype == 1){//chirp sine identification
+	// P50 = 1: チャープサインによるシステム同定。
+	if(flag_exptype == 1){
 
 		ctrl_chirp(t, &ctrl_cmd); // linear chirp
 
@@ -110,37 +112,43 @@ void realtimeinterrupt_plcc()
 		t=counter/1000.0;
 		counter=counter+1;
 		hardw_vref(ctrl_cmd); //change ctrl_cmd[V] to -32768-32767 and output
-	
 	}
-	if(flag_exptype==2)//PID OK
-	{
-		//step
+
+	// P50 = 2: PD, PID制御。
+	if(flag_exptype==2){
+		//step入力
 		hardw_angle_fromdeg_tonum(STEP_REF_AMP_DEG, &const_ref_num); //change reference from deg to num
 		ctrl_step_input_with_end(const_ref_num+initial_pos_num, 0, 5, t, &ref_out); //make step reference
-		//sin
+		//sin波入力
 		//hardw_angle_fromdeg_tonum(STEP_REF_AMP_DEG, &amp_sinref_num); 
 		//ref_out = initial_pos_num + amp_sinref_num*sin(1*2*3.14*t);
 
 		pshm->Motor[1].DesPos=ref_out; 
 		pshm->Motor[1].PosError=pshm->Motor[1].DesPos-pshm->Motor[1].ActPos;  
+
+		// 5秒間だけ制御する。
 		if (t<5){
-		//ctrl_cmd = func_TF2Exe_AntiWindUp( pshm->Motor[1].PosError, &gstCpidInf[0],-5.0,5.0);//FB control output: ctrl_cmd[V]
-		ctrl_cmd = func_TF1Exe( pshm->Motor[1].PosError, &gstCpdInf[0]);//FB control output: ctrl_cmd[V]
+			// PID制御はこちらをコメント解除して使う
+			//ctrl_cmd = func_TF2Exe_AntiWindUp( pshm->Motor[1].PosError, &gstCpidInf[0],-5.0,5.0);//FB control output: ctrl_cmd[V]
+
+			// PD制御はこちらをコメント解除して使う
+			ctrl_cmd = func_TF1Exe( pshm->Motor[1].PosError, &gstCpdInf[0]);//FB control output: ctrl_cmd[V]
 		}
 		else{
-		ctrl_cmd = 0.0;
+			ctrl_cmd = 0.0;
 		}
 		//time count
 			t=counter/1000.0;
 			counter=counter+1;
 			hardw_vref(ctrl_cmd); //change ctrl_cmd[V] to -32768-32767 and output
-
 	}
-	if(flag_exptype==3){//disturbance observer
-		//reference
+
+	// P50 = 3: PPD制御 + 外乱オブザーバ。
+	if(flag_exptype==3){
+		// 位置指令値
 		const_ref_num = 0.0;
 		if(t>0){
-		ref_out = const_ref_num + initial_pos_num;
+			ref_out = const_ref_num + initial_pos_num;
 		} 
 
 		//fbout=v0, qin = v1
@@ -148,14 +156,26 @@ void realtimeinterrupt_plcc()
 		pshm->Motor[1].PosError=pshm->Motor[1].DesPos-pshm->Motor[1].ActPos;  
 		v0=func_TF1Exe( pshm->Motor[1].PosError, &gstCpdInf[0]);//FB control output: ctrl_cmd[V]
 		v2 = qout - invqout;
-		// v1 = v0 + v2; // shut loop
-		v1 = v0;
+
+		// 初期値応答が収束するまでDOBを動かさない。とりあえず1秒。
+		// 常に外乱オブザーバを入れない場合はv1 = v0; のみ残し残りをコメントアウトする。
+		if(t>1){
+			v1 = v0 + v2; 
+		}
+		else{
+			v1 = v0;
+		}
 		vdistest = -v2;
 		qout = func_TF2Exe( v1, &LFmath);
 		invqout = func_TF2Exe(pshm->Motor[1].ActPos, &INVQmath);
 
-		//disturbance input
-		vdistsim = 2;
+		//外乱入力
+		vdistsim = 0;
+		// シミュレーション開始から2秒後にステップ外乱
+		if(t > 2){
+			vdistsim = 2;
+		}
+
 		ctrl_cmd = v1 + vdistsim;
 
 		//time count
@@ -164,13 +184,12 @@ void realtimeinterrupt_plcc()
 		hardw_vref(ctrl_cmd); //change ctrl_cmd[V] to -32768-32767 and output
 
 		for(jj =2; jj > 0; jj--){ 
-				qout_buff[jj] = qout_buff[jj-1];  
-				invqout_buff[jj] =  invqout_buff[jj-1];
-				v1_buff[jj] = v1_buff[jj-1];
-				actPos_buff[jj] = actPos_buff[jj-1];
-		   }
+			qout_buff[jj] = qout_buff[jj-1];  
+			invqout_buff[jj] =  invqout_buff[jj-1];
+			v1_buff[jj] = v1_buff[jj-1];
+			actPos_buff[jj] = actPos_buff[jj-1];
+		}
 	}
-
 }
 
 

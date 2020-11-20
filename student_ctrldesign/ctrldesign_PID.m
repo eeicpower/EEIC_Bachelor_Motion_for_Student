@@ -1,37 +1,35 @@
 %% ctrldesign_PID_PD
-% identification_chirp.m‚Å“¯’è‚µ‚½Œ‹‰Ê‚ðŽg‚¤
-% ‹É”z’u‚ÅPID§ŒäŠí‚ðÝŒv
-% PID‚Íƒƒ“‚³‚ñ‚ÌparaPID_pp.m‚ðŽg‚¤
+% 2020/11/20 Shirato, Miyoshi
+% identification_chirp.mã§åŒå®šã—ãŸçµæžœã‚’ä½¿ã†
+% æ¥µé…ç½®ã§PIDåˆ¶å¾¡å™¨ã‚’è¨­è¨ˆ
+% PIDã¯ãƒ¯ãƒ³ã•ã‚“ã®paraPID_pp.mã‚’ä½¿ã†ã€‚
+% å­¦ç”Ÿã®æ›¸ã„ãŸdesignPID.mã‚’ä½¿ã£ã¦ã‚‚è‰¯ã„ã€‚
 Ts = 1/1000;
 %% PID
 %clear;
 %close all;
 s = tf('s');
-% “dˆ³‚ÌŒ`‚ð‚µ‚½ƒgƒ‹ƒNŽw—ß’l‚©‚ç‘¬“x‚Ì“¯’èŒ‹‰Ê@7.263e06/(s + 20.15)*exp(-0.002*s)
-Gnominal =  (7.263e06/(s + 20.15))*(1/s);
+% é‡æ ¹é…ç½®ã—ãŸã„å‘¨æ³¢æ•°ã‚’ã“ã“ã«å…¥åŠ›
+omega = 20 * 2 * pi;
+
+% ãƒˆãƒ«ã‚¯æŒ‡ä»¤å€¤ã‹ã‚‰é€Ÿåº¦ã®åŒå®šçµæžœã‚’ã“ã“ã«å…¥åŠ›ã€‚å¾Œã‚ã® * (1/s);ã‚’æ¶ˆã•ãªã„ã“ã¨ã€‚
+Gnominal =  0 * (1/s);
+
 Gnominal_z = c2d(Gnominal,Ts,'tustin');
-C = paraPID_pp('pid',Gnominal,10*2*pi);
-%pltNyquist(C* Gnominal)
-%figure; step((C * Gnominal)/(1 + C * Gnominal))
-%figure; pzplot(C)
-%pltBode((C * Gnominal*exp(-0.002*s))/(1 + C * Gnominal*exp(-0.002*s)));
-%pltNyquist(C*Gnominal*exp(-0.002*s));
-% (0.3192 s^2 + 136.6 s + 2.146e04)/(s^2 + 2493 s)
-%figure; step(C/(1 + C * Gnominal))
-Cpid = C;
-Cz = c2d(C,Ts,'tustin');
-%(0.1749 z^2 - 0.2794 z + 0.1141)/(z^2 - 0.8902 z - 0.1098) %100Hz
-%(0.00241 z^2 - 0.004696 z + 0.002288)/(z^2 - 1.793 z + 0.7928) %10Hz   
+
+% designPIDã‚’ä½¿ã£ãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’æ›¸ãã€‚
+Cpid = 0; % paraPID_pp('pid',Gnominal,omega);
+
+% PMACå®Ÿè£…ã®ãŸã‚ã®å˜ä½æ›ç®—  [Nm/rad] -> [V/count]
+Cpid_c_pmac = Cpid / 0.98 / 312500 * (2 * pi);
+Cpid_d_pmac = c2d(Cpid_c_pmac,Ts,'tustin')
+
 %% PD
 s = tf('s');
-% “dˆ³‚ÌŒ`‚ð‚µ‚½ƒgƒ‹ƒNŽw—ß’l‚©‚ç‘¬“x‚Ì“¯’èŒ‹‰Ê@7.263e06/(s + 20.15)*exp(-0.002*s)
-Gnominal =  (7.263e06/(s + 20.15))*(1/s);
-omega = 20 * 2 * pi;
-Kp = omega^2/(7.263e06);
-Kd = (2 * omega -20.15)/7.263e06;
-taud = 0.1 * Kd;
-Cpd = Kp + Kd*s/(taud*s+1);
-Cpd_z = c2d(Cpd,Ts,'tustin'); % (0.06543 z - 0.06111)/(z + 0.9873)     
-figure; step(Cpd/(1 + Cpd * Gnominal)) %PD§Œä‚Å‚Í’Ç]‚¹‚¸
-pltNyquist(Cpd*Gnominal*exp(-0.002*s));
-figure; pzplot(Cpd)
+% é›»åœ§ã®å½¢ã‚’ã—ãŸãƒˆãƒ«ã‚¯æŒ‡ä»¤å€¤ã‹ã‚‰é€Ÿåº¦ã®åŒå®šçµæžœ
+% designPDã‚’ä½¿ã£ãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’æ›¸ãã€‚
+Cpd = 0;
+
+% PMACå®Ÿè£…ã®ãŸã‚ã®å˜ä½æ›ç®—  [Nm/rad] -> [V/count]
+Cpd_c_pmac = Cpd / 0.98 / 312500 * (2 * pi);
+Cpd_d_pmac = c2d(Cpd_c_pmac,Ts,'tustin')

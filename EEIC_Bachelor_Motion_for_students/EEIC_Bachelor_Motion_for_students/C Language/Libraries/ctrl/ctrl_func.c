@@ -1,4 +1,4 @@
-//#include <gplib.h>
+﻿//#include <gplib.h>
 //#include <RtGpShm.h>	// Global Rt/Gp Shared memory pointers
 //-------------------------------------------------------------
 // The following is a projpp created file from the User defines
@@ -40,7 +40,8 @@ void	func_TF2StateInit( volatile TF2_INF *stpInf )
 	stpInf->dOutPre[1] = 0.0;
 }
 
-void	func_CpidParaInit( volatile TF2_INF *stpInf ){//10Hz
+// Matlabで設計した離散時間PID制御器のパラメータを入力。
+void func_CpidParaInit( volatile TF2_INF *stpInf ){
 	stpInf->dB[0] = 0.0;
     stpInf->dB[1] = 0.0; 
 	stpInf->dB[2] = 0.0; 
@@ -49,14 +50,25 @@ void	func_CpidParaInit( volatile TF2_INF *stpInf ){//10Hz
 	stpInf->dA[2] = 0.0;
 }
 
-void func_CpdParaInit(volatile TF1_INF *stpInf){// 20Hz PD OK
+// Matlabで設計した離散時間PD制御器のパラメータを入力。
+void func_CpdParaInit(volatile TF1_INF *stpInf){// 10Hz PD
 	stpInf->dB[0] = 0.0;
     stpInf->dB[1] = 0.0; 
 	stpInf->dA[0] = 0.0;
     stpInf->dA[1] = 0.0;
 }
 
-void	func_LPFParaInit( volatile TF2_INF *stpInf ){//LPF for ���W�ۑ�2
+void	func_LPFParaInit( volatile TF2_INF *stpInf ){//200Hz LPF for 発展課題2
+	stpInf->dB[0] = 0.1628;
+    stpInf->dB[1] = 0.3256; 
+	stpInf->dB[2] = 0.1628; 
+	stpInf->dA[0] = 1.0;
+    stpInf->dA[1] = -0.4991;
+	stpInf->dA[2] = 0.1502;
+}
+
+// Matlabで設計した外乱オブザーバ用ローパスフィルタのパラメータを入力。
+void func_LFmathParaInit( volatile TF2_INF *stpInf){//50Hz LPF for DOB G_lpf
 	stpInf->dB[0] = 0.0;
     stpInf->dB[1] = 0.0; 
 	stpInf->dB[2] = 0.0; 
@@ -65,16 +77,8 @@ void	func_LPFParaInit( volatile TF2_INF *stpInf ){//LPF for ���W�ۑ�2
 	stpInf->dA[2] = 0.0;
 }
 
-void	func_LFmathParaInit( volatile TF2_INF *stpInf){//LPF for DOB
-	stpInf->dB[0] = 0.0;
-    stpInf->dB[1] = 0.0; 
-	stpInf->dB[2] = 0.0; 
-	stpInf->dA[0] = 0.0;
-    stpInf->dA[1] = 0.0;
-	stpInf->dA[2] = 0.0;
-}
-
-void	func_INVQmathParaInit(volatile TF2_INF *stpInf){//LPF and inverse of plant
+// Matlabで設計した外乱オブザーバ用ローパスフィルタ×逆ノミナルプラントのパラメータを入力。
+void func_INVQmathParaInit(volatile TF2_INF *stpInf){//50Hz LPF times inverse of nominal plant G_lpf * P_n^{-1}
 	stpInf->dB[0] = 0.0;
     stpInf->dB[1] = 0.0; 
 	stpInf->dB[2] = 0.0; 
