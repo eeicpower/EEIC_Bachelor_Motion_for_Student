@@ -69,25 +69,9 @@ void realtimeinterrupt_plcc()
 	volatile struct GateArray3  *MyGate3;//
 	MyGate3 = GetGate3MemPtr(0); //
 
-	// update sensor data
-	motor_pos_rad = (pshm->Motor[1].ActPos - initial_pos_num) / ENC_PULSE * 2 * M_PI;
-  motor_vel_rads = pshm->Motor[1].ActVel / ENC_PULSE * 2 * M_PI * STEP_TIME;
+	// P variables input
+	flag_exptype = pshm->P[50];
 
-	// P変数の定義 P変数のみをPMACと送受信できる？？
-	flag_exptype=pshm->P[50];
-	pshm->P[1]=pshm->Motor[1].ActVel;//not velocity but difference of ActPos[number]
-	pshm->P[2]=ref_out;//reference [number]
-	pshm->P[3]=pshm->Motor[1].PosError;//error [number]
-	pshm->P[5] = ctrl_cmd;
-	pshm->P[6] = pshm->Motor[1].ActPos;//output [number]
-	pshm->P[7] = v0; 
-	pshm->P[8] = v1;
-	pshm->P[9] = vdistsim;
-	pshm->P[10] = vdistest;
-	pshm->P[98]=t;//[s]
-	pshm->P[99]=counter;
-	pshm->P[100] = initial_pos_num;
-	
 	//initialize shirato added for FB control
 	// 1回目だけ実行される初期化ルーチン
 	if(flag_init == 0){
@@ -111,6 +95,10 @@ void realtimeinterrupt_plcc()
 		flag_init = 1;
 		initial_pos_num = pshm->Motor[1].ActPos;//num
 	}
+
+	// update sensor data
+	motor_pos_rad = (pshm->Motor[1].ActPos - initial_pos_num) / ENC_PULSE * 2 * M_PI;
+  motor_vel_rads = pshm->Motor[1].ActVel / ENC_PULSE * 2 * M_PI * STEP_TIME;
  
 	// P50 = 0: 制御入力0を出力する。（＝何もしない）
 	if(flag_exptype == 0){//no output
@@ -206,6 +194,21 @@ void realtimeinterrupt_plcc()
 			actPos_buff[jj] = actPos_buff[jj-1];
 		}
 	}
+
+	// P変数の定義 P変数のみをPMACと送受信できる？？
+	// P variables output
+	pshm->P[1]=pshm->Motor[1].ActVel;//not velocity but difference of ActPos[number]
+	pshm->P[2]=ref_out;//reference [number]
+	pshm->P[3]=pshm->Motor[1].PosError;//error [number]
+	pshm->P[5] = ctrl_cmd;
+	pshm->P[6] = pshm->Motor[1].ActPos;//output [number]
+	pshm->P[7] = v0; 
+	pshm->P[8] = v1;
+	pshm->P[9] = vdistsim;
+	pshm->P[10] = vdistest;
+	pshm->P[98]=t;//[s]
+	pshm->P[99]=counter;
+	pshm->P[100] = initial_pos_num;
 }
 
 
