@@ -33,11 +33,11 @@ Author:		Yui Shirato
 //#include "../../Include/ECATMap.h" //add ADin
 #include "hardw_cdrv.h"
 
-#define		TOIDA_Single	(3276.7)	//DAƒ|[ƒg‚Å10Vo‚µ‚½‚¢‚Æ‚«‚Í32767‚ð MyGate3->Chan[0].Dac[axis] = (int)32767 << 16; ‚É‘‚­
+#define		TOIDA_Single	(3276.7)	//DAï¿½|ï¿½[ï¿½gï¿½ï¿½10Vï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½32767ï¿½ï¿½ MyGate3->Chan[0].Dac[axis] = (int)32767 << 16; ï¿½Éï¿½ï¿½ï¿½
 void hardw_vref(double vref)
 {
-	volatile struct GateArray3  *MyGate3; // Gate3—p\‘¢‘Ì•Ï”‚Ì’è‹`
-	MyGate3 = GetGate3MemPtr(0); // Acc24E3[0]‚ÌƒAƒhƒŒƒX‚ðÝ’è
+	volatile struct GateArray3  *MyGate3; // Gate3ï¿½pï¿½\ï¿½ï¿½ï¿½Ì•Ïï¿½ï¿½Ì’ï¿½`
+	MyGate3 = GetGate3MemPtr(0); // Acc24E3[0]ï¿½ÌƒAï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½Ý’ï¿½
 
 	if (vref>5){
       vref=5;
@@ -47,8 +47,28 @@ void hardw_vref(double vref)
 	 vref = vref;
 	 }
 
-	MyGate3->Chan[0].Dac[0] = (int)(vref*TOIDA_Single) << 16; //32767=10V‚È‚Ì‚ÅCTOIDA_Single‚ð—p‚¢‚½‚Æ”»’f‚µ‚½
+	MyGate3->Chan[0].Dac[0] = (int)(vref*TOIDA_Single) << 16; //32767=10Vï¿½È‚Ì‚ÅCTOIDA_Singleï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½Æ”ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½
 	
+}
+
+#define TRQ_MAX 5 // [Nm]
+#define MAX_VAL 32767
+#define TRQ_CONST 0.9800 // [Nm/V]
+
+// hardware input 10 V -> (32767 << 16)
+void hardw_trqref(double trqref)
+{
+	volatile struct GateArray3  *MyGate3;
+	MyGate3 = GetGate3MemPtr(0);
+	
+	// saturation
+	if (trqref > TRQ_MAX){
+    trqref = TRQ_MAX;
+	} else if (trqref < -TRQ_MAX) {
+		trqref = -TRQ_MAX;
+	}
+
+	MyGate3->Chan[0].Dac[0] = (int)(trqref / TRQ_CONST * MAX_VAL) << 16;
 }
 
 #define One_Circle_Num	(312500) //1 circle = 360 deg = 312500
