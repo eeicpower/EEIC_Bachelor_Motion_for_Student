@@ -1,6 +1,7 @@
 ﻿#include <gplib.h>
 #include <stdio.h>
 #include <dlfcn.h>
+#include <math.h>
 //----------------------------------------------------------------------------------
 // pp_proj.h is the C header for accessing PMAC Global, CSGlobal, Ptr vars
 // _PPScriptMode_ for Pmac Script like access global & csglobal
@@ -18,6 +19,10 @@
 #include "../../Libraries/hardw_cdrv/hardw_cdrv.h"
 #include "rticplc.h"
 
+#define STEP_TIME 0.0010 // [s]
+#define ENC_PULSE 312500 // [number]
+#define TRQ_CONST 0.9800 // [Nm/V]
+
 int counter=0; // time in millesec
 double t=0.0;  // real time in sec
 int flag_init =0; //if flag_init = 0, initialize
@@ -28,6 +33,13 @@ extern volatile TF2_INF		gstCpidInf[1];
 extern volatile TF1_INF		gstCpdInf[1];
 extern volatile TF2_INF		gstLPFInf[1];
 double ctrl_cmd=0.0; //input to a motor[V]
+
+double torque_cmd_Nm = 0.0;  // torque input to a motor [Nm]
+double motor_pos_rad = 0.0;  // motor position [rad]
+double pos_error_rad = 0.0;  // position error [rad]
+double pos_ref_rad = 0.0;    // position reference [rad]
+double motor_vel_rads = 0.0; // motor velocity [rad/s]
+
 double v0 = 0.0;
 double v1 = 0.0;
 double v2 = 0.0;
@@ -56,6 +68,10 @@ void realtimeinterrupt_plcc()
 	//don't change
 	volatile struct GateArray3  *MyGate3;//
 	MyGate3 = GetGate3MemPtr(0); //
+
+	// update sensor data
+	motor_pos_rad = (pshm->Motor[1].ActPos - initial_pos_num) / ENC_PULSE * 2 * M_PI;
+  motor_vel_rads = pshm->Motor[1].ActVel / ENC_PULSE * 2 * M_PI * STEP_TIME;
 
 	// P変数の定義 P変数のみをPMACと送受信できる？？
 	flag_exptype=pshm->P[50];
