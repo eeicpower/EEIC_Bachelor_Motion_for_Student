@@ -100,23 +100,20 @@ void realtimeinterrupt_plcc()
 
 	// P50 = 2: PD, PID制御。
 	if (flag_exptype==2) {
-		//step入力
-		hardw_angle_fromdeg_tonum(STEP_REF_AMP_DEG, &const_ref_num); //change reference from deg to num
-		ctrl_step_input_with_end(const_ref_num+initial_pos_num, 0, 5, time, &ref_out); //make step reference
-		//sin波入力
-		//hardw_angle_fromdeg_tonum(STEP_REF_AMP_DEG, &amp_sinref_num); 
-		//ref_out = initial_pos_num + amp_sinref_num*sin(1*2*3.14*t);
+		//step reference (angle ref [rad], start time [s], end time [s], current time [s], position reference [rad])
+		ctrl_step_input_with_end(M_PI/2.0, 0, 5, time, &pos_ref_rad); //make step reference
 
-		pshm->Motor[1].DesPos=ref_out; 
-		pshm->Motor[1].PosError=pshm->Motor[1].DesPos-pshm->Motor[1].ActPos;  
+		//sin wave input
+		//pos_ref_rad = amp_sinref_rad * sin(2 * M_PI * time);
 
 		// 5秒間だけ制御する。
 		if (time < 5) {
-			// PID制御はこちらをコメント解除して使う
-			//torque_cmd_Nm = func_TF2Exe_AntiWindUp( pshm->Motor[1].PosError, &gstCpidInf[0],-5.0,5.0); //FB control output
+			pos_error_rad = pos_ref_rad - motor_pos_rad;
+			
+			//torque_cmd_Nm = func_TF2Exe_AntiWindUp(pos_error_rad, &gstCpidInf[0],-5.0,5.0); //FB control output
 
 			// PD制御はこちらをコメント解除して使う
-			torque_cmd_Nm = func_TF1Exe( pshm->Motor[1].PosError, &gstCpdInf[0]); //FB control output
+			torque_cmd_Nm = func_TF1Exe(pos_error_rad, &gstCpdInf[0]); //FB control output
 		}
 		else {
 			torque_cmd_Nm = 0.0;
@@ -127,15 +124,10 @@ void realtimeinterrupt_plcc()
 	// P50 = 3: PPD制御 + 外乱オブザーバ。
 	if (flag_exptype==3) {
 		// 位置指令値
-		const_ref_num = 0.0;
-		if (time > 0) {
-			ref_out = const_ref_num + initial_pos_num;
-		} 
+		pos_ref_rad = 0.0;
 
-		//fbout=v0, qin = v1
-		pshm->Motor[1].DesPos=ref_out; 
-		pshm->Motor[1].PosError=pshm->Motor[1].DesPos-pshm->Motor[1].ActPos;  
-		v0=func_TF1Exe( pshm->Motor[1].PosError, &gstCpdInf[0]); // FB control output
+		pos_error_rad = pos_ref_rad - motor_pos_rad;
+		v0 = func_TF1Exe(pos_error_rad, &gstCpdInf[0]); // FB control output
 		v2 = qout - invqout;
 
 		// 初期値応答が収束するまでDOBを動かさない。とりあえず1秒。
@@ -147,8 +139,8 @@ void realtimeinterrupt_plcc()
 			v1 = v0;
 		}
 		vdistest = -v2;
-		qout = func_TF2Exe( v1, &LFmath);
-		invqout = func_TF2Exe(pshm->Motor[1].ActPos, &INVQmath);
+		qout = func_TF2Exe(v1, &LFmath);
+		invqout = func_TF2Exe(motor_pos_rad &INVQmath);
 
 		//外乱入力
 		vdistsim = 0;
@@ -167,17 +159,17 @@ void realtimeinterrupt_plcc()
 
 	// P変数の定義 P変数のみをPMACと送受信できる？？
 	// P variables output
-	pshm->P[1]=pshm->Motor[1].ActVel;//not velocity but difference of ActPos[number]
-	pshm->P[2]=ref_out;//reference [number]
-	pshm->P[3]=pshm->Motor[1].PosError;//error [number]
-	pshm->P[5] = torque_cmd_Nm;
-	pshm->P[6] = pshm->Motor[1].ActPos;//output [number]
-	pshm->P[7] = v0; 
-	pshm->P[8] = v1;
-	pshm->P[9] = vdistsim;
+	pshm->P[1]  = motor_vel_rads;
+	pshm->P[2]  = pos_ref_rad;
+	pshm->P[3]  = pos_error_rad;
+	pshm->P[5]  = torque_cmd_Nm;
+	pshm->P[6]  = motor_pos_rad;
+	pshm->P[7]  = v0;
+	pshm->P[8]  = v1;
+	pshm->P[9]  = vdistsim;
 	pshm->P[10] = vdistest;
 	pshm->P[98] = time;
-	pshm->P[99]=counter;
+	pshm->P[99] = counter;
 	pshm->P[100] = initial_pos_num;
 }
 
