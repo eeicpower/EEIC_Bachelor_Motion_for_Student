@@ -1,4 +1,4 @@
-﻿#include <gplib.h>
+#include <gplib.h>
 #include <stdio.h>
 #include <dlfcn.h>
 #include <math.h>
@@ -24,7 +24,7 @@
 #define TRQ_CONST 0.9800 // [Nm/V]
 
 int counter = 0;    // time in millesec
-double time = 0.0;  // real time in sec
+double timer = 0.0;  // real time in sec
 
 int flag_init = 1;    // if flag_init = 1, initialize
 int flag_exptype = 0; // if flag_exptype = 1, chirp signal / flag_exptype=2, PID control algorithm starts
@@ -84,7 +84,7 @@ void realtimeinterrupt_plcc()
   motor_vel_rads = pshm->Motor[1].ActVel / ENC_PULSE * 2 * M_PI * STEP_TIME;
 
 	// update timer data
-	time = counter * STEP_TIME;
+	timer = counter * STEP_TIME;
  
 	// P50 = 0: 制御入力0を出力する。（＝何もしない）
 	if (flag_exptype == 0) {
@@ -94,20 +94,20 @@ void realtimeinterrupt_plcc()
 
 	// P50 = 1: チャープサインによるシステム同定。
 	if (flag_exptype == 1) {
-		ctrl_chirp(time, &torque_cmd_Nm); // linear chirp
+		ctrl_chirp(timer, &torque_cmd_Nm); // linear chirp
 		counter++;
 	}
 
 	// P50 = 2: PD, PID制御。
 	if (flag_exptype==2) {
 		//step reference (angle ref [rad], start time [s], end time [s], current time [s], position reference [rad])
-		ctrl_step_input_with_end(M_PI/2.0, 0, 5, time, &pos_ref_rad); //make step reference
+		ctrl_step_input_with_end(M_PI/2.0, 0, 5, timer, &pos_ref_rad); //make step reference
 
 		//sin wave input
-		//pos_ref_rad = amp_sinref_rad * sin(2 * M_PI * time);
+		//pos_ref_rad = amp_sinref_rad * sin(2 * M_PI * timer);
 
 		// 5秒間だけ制御する。
-		if (time < 5) {
+		if (timer < 5) {
 			pos_error_rad = pos_ref_rad - motor_pos_rad;
 			
 			//torque_cmd_Nm = func_TF2Exe_AntiWindUp(pos_error_rad, &gstCpidInf[0],-5.0,5.0); //FB control output
@@ -132,7 +132,7 @@ void realtimeinterrupt_plcc()
 
 		// 初期値応答が収束するまでDOBを動かさない。とりあえず1秒。
 		// 常に外乱オブザーバを入れない場合はv1 = v0; のみ残し残りをコメントアウトする。
-		if (time > 1) {
+		if (timer > 1) {
 			v1 = v0 + v2; 
 		}
 		else {
@@ -140,12 +140,12 @@ void realtimeinterrupt_plcc()
 		}
 		vdistest = -v2;
 		qout = func_TF2Exe(v1, &LFmath);
-		invqout = func_TF2Exe(motor_pos_rad &INVQmath);
+		invqout = func_TF2Exe(motor_pos_rad, &INVQmath);
 
 		//外乱入力
 		vdistsim = 0;
 		// シミュレーション開始から2秒後にステップ外乱
-		if (time > 2) {
+		if (timer > 2) {
 			vdistsim = 2;
 		}
 
@@ -168,7 +168,7 @@ void realtimeinterrupt_plcc()
 	pshm->P[8]  = v1;
 	pshm->P[9]  = vdistsim;
 	pshm->P[10] = vdistest;
-	pshm->P[98] = time;
+	pshm->P[98] = timer;
 	pshm->P[99] = counter;
 	pshm->P[100] = initial_pos_num;
 }
