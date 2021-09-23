@@ -1,0 +1,4 @@
+/usr/local/bin/../lib/gcc/powerpc-405-linux-gnu/4.2.2/../../../../powerpc-405-linux-gnu/bin/ld: skipping incompatible /usr/local/dtlibs/libppmac/libppmac.so when searching for -lppmac
+/usr/local/bin/../lib/gcc/powerpc-405-linux-gnu/4.2.2/../../../../powerpc-405-linux-gnu/bin/ld: cannot find -lppmac
+collect2: ld returned 1 exit status
+make: *** ["../../../Bin/Debug/capp1.out"] Error 1

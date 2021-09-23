@@ -8,7 +8,7 @@
     <RootNamespace>EEIC_Bachelor_Motion_for_students</RootNamespace>
     <AssemblyName>Power Pmac Project Template</AssemblyName>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
-    <IPAddress>192.168.0.200</IPAddress>
+    <IPAddress>no device</IPAddress>
     <TelnetPassword>deltatau</TelnetPassword>
     <TelnetPort>22</TelnetPort>
     <TelnetUser>root</TelnetUser>
@@ -36,7 +36,7 @@
     <ProjppTimeoutPeriod>300000</ProjppTimeoutPeriod>
     <ProjectExportLevel>0</ProjectExportLevel>
     <Name>EEIC_Bachelor_Motion_for_students</Name>
-    <PPCPUType>armv71-4.1.18;4.1.18-ipipe</PPCPUType>
+    <PPCPUType>ppc405</PPCPUType>
     <DownloadSystemSetupConfig>No</DownloadSystemSetupConfig>
     <UseNewNamingFormat>No</UseNewNamingFormat>
     <ProjectFrimwareVers>2.4.1.2</ProjectFrimwareVers>
@@ -70,6 +70,9 @@
     <Compile Include="C Language\Libraries\hardw_cdrv\hardw_cdrv.c">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="System\Hardware\CK3W-AD3100[1].hwsetup">
+      <SubType>Content</SubType>
+    </None>
     <None Include="System\Hardware\CK3W-AX1515[0].hwsetup">
       <SubType>Content</SubType>
     </None>
