@@ -99,13 +99,13 @@ Gcat.name = 'data';
 figure; bode(Gcat.sys)
 
 % トルク指令値から角速度までを1次系として同定
-Gfit.sys = tfest(Gcat.sys,1,0);
+Gfit.sys = tfest(Gcat.sys,1,0); %
 s = tf('s');
 Gfit.name = 'fitting';
 Gfit2.sys = Gfit.sys * exp(-0.002*s);% actually, there must be a time delay
 Gfit2.name = 'fitting (w delay)';
 OP.fmin = 1; OP.fmax = 500;
-bode(Gcat.sys,Gfit.sys);
+bode(Gcat.sys,Gfit.sys); 
 
 %% 慣性モーメントと粘性摩擦を求めてみる
 Kt = 6; % [-] 2016年度の実験のKt = 0.6 kgf/V に対し，9.8 N/kgfをかけて0.98 Nm/Vで割ると得られる。
