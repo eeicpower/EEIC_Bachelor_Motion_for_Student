@@ -24,47 +24,44 @@ T = readtable(fullpath);
 
 %% 単位換算の前処理
 % sysP98
-% 時刻。そのまま。
+% 時刻。
 SysP98 = T.Sys_P_98_;
 
 % sysP1
-% モータの角速度。モータ位置の差分が出てくるので微分に変換しつつ単位系をcount/sからrad/sに変換。
-dt = SysP98(find(SysP98 > 0.0, 1));
-SysP1 = T.Sys_P_1_ / dt / 312500.0 * 2 * pi;
+% モータの角速度。
+SysP1 = T.Sys_P_1_;
 
 % sysP2
-% モータの位置指令値。countなのでradに変換する。312500counts = 2 pi rad
-SysP2 = T.Sys_P_2_ / 312500.0 * 2 * pi;
-SysP2 = SysP2 - SysP2(1); % 初期位置を引いておく。
+% モータの位置指令値。
+SysP2 = T.Sys_P_2_;
 
 % sysP3
-% モータの位置誤差。countなのでradに変換する。312500counts = 2 pi rad
-SysP3 = T.Sys_P_3_ / 312500.0 * 2 * pi;
+% モータの位置誤差。
+SysP3 = T.Sys_P_3_;
 
 % sysP5
-% トルク制御入力。VなのでNmに変換する。1V = 0.98Nm
-SysP5 = T.Sys_P_5_ * 0.98;
+% トルク制御入力。
+SysP5 = T.Sys_P_5_;
 
 % sysP6
-% モータの位置。countなのでradに変換する。312500counts = 2 pi rad
-SysP6 = T.Sys_P_6_ / 312500.0 * 2 * pi;
-SysP6 = SysP6 - SysP6(1); % 初期位置を引いておく。
+% モータの位置。
+SysP6 = T.Sys_P_6_;
 
 % sysP7
-% 外乱オブザーバ実験におけるv0信号（PD制御器出力）。VなのでNmに変換する。1V = 0.98Nm
-SysP7 = T.Sys_P_7_ * 0.98;
+% 外乱オブザーバ実験におけるv0信号（PD制御器出力）。
+SysP7 = T.Sys_P_7_;
 
 % sysP9
-% 外乱オブザーバ実験におけるソフトウェア外乱入力。VなのでNmに変換する。1V = 0.98Nm
-SysP9 = T.Sys_P_9_ * 0.98;
+% 外乱オブザーバ実験におけるソフトウェア外乱入力。
+SysP9 = T.Sys_P_9_;
 
 % sysP10
-% 外乱オブザーバ実験における推定外乱出力。VなのでNmに変換する。1V = 0.98Nm
-SysP10 = T.Sys_P_10_ * 0.98;
+% 外乱オブザーバ実験における推定外乱出力。
+SysP10 = T.Sys_P_10_;
 
 % sysP100
-% モータ初期位置。countなのでradに変換する。312500counts = 2 pi rad
-SysP100 = T.Sys_P_100_ / 312500.0 * 2 * pi;
+% モータ初期位置。
+SysP100 = T.Sys_P_100_;
 
 % 読み込み終わったのでTを消去
 clearvars T
