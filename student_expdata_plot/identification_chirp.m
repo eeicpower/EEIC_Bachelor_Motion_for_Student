@@ -13,7 +13,7 @@ close all;
 clear;
 
 %% １回ですべての周波数を同定する場合
-load('./matfiles/20210929chirp_exp_01-500.mat');
+load('./matfiles/.mat');
 fs = 1000;
 tperiod = 20; 
 
@@ -33,27 +33,15 @@ figure; bode(G1)
 
 G1prime = G1;
 % fittingがうまく行かない場合，次の行のコメントを外し，frdデータを見て形がきれいな周波数部分を取り出す
-G1prime = fselect(G1,0.1,50);
+G1prime = fselect(G1,0.01,100);
 
-<<<<<<< Updated upstream
 % トルク指令値から角速度までを1次系として同定
-Gfit.sys = tfest(Gcat.sys,1,0); %
-s = tf('s');
-Gfit.name = 'fitting';
-Gfit2.sys = Gfit.sys * exp(-0.002*s);% actually, there must be a time delay
-Gfit2.name = 'fitting (w delay)';
-OP.fmin = 1; OP.fmax = 500;
-bode(Gcat.sys,Gfit.sys); 
-=======
-% expfig(['plot/chirp/chirp_0p1Hz_500Hz_G1Bode'],'-png','-pdf','-emf');
-
-% from Torque reference to velocity, 1 order system
 Gest = tfest(G1prime,1);
 Gfit = tf(Gest.Numerator,Gest.Denominator);
 s = tf('s');
 Gfit.name = 'fitting';
- %Gfit2.sys = Gfit.sys * exp(-0.002*s);%actually, there must be a time delay
-figure; bode(G1prime); hold on; bode(Gfit); legend;
+%Gfit2.sys = Gfit.sys * exp(-0.002*s);%actually, there must be a time delay
+figure; bode(G1); hold on; bode(Gfit); legend;
 %expfig(['plot/chirp/chirp_0p1Hz_500Hz_GcatGfitBode'],'-png','-pdf','-emf');
 
 [cxy,f] = mscohere(x,y_detrend,fs*tperiod,[],[],fs);
@@ -62,7 +50,6 @@ figure;
 semilogx(G1.Frequency,G1.UserData);
 xlabel('frequency[Hz]')
 ylabel('coherence')
->>>>>>> Stashed changes
 
 %% 複数のデータを統合する場合
 % numdata = 3;
