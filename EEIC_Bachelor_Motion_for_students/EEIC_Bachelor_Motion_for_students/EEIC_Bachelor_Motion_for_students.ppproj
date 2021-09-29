@@ -8,7 +8,7 @@
     <RootNamespace>EEIC_Bachelor_Motion_for_students</RootNamespace>
     <AssemblyName>Power Pmac Project Template</AssemblyName>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
-    <IPAddress>no device</IPAddress>
+    <IPAddress>192.168.0.200</IPAddress>
     <TelnetPassword>deltatau</TelnetPassword>
     <TelnetPort>22</TelnetPort>
     <TelnetUser>root</TelnetUser>
@@ -36,10 +36,10 @@
     <ProjppTimeoutPeriod>300000</ProjppTimeoutPeriod>
     <ProjectExportLevel>0</ProjectExportLevel>
     <Name>EEIC_Bachelor_Motion_for_students</Name>
-    <PPCPUType>ppc405</PPCPUType>
+    <PPCPUType>armv71-4.1.18;4.1.18-ipipe</PPCPUType>
     <DownloadSystemSetupConfig>No</DownloadSystemSetupConfig>
     <UseNewNamingFormat>No</UseNewNamingFormat>
-    <ProjectFrimwareVers>2.4.1.2</ProjectFrimwareVers>
+    <ProjectFrimwareVers>2.4.1.6</ProjectFrimwareVers>
     <CPUType>arm,LS1021A</CPUType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

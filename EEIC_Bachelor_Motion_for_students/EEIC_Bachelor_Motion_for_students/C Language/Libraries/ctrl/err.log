@@ -1,14 +1,3 @@
-ctrl_chirp.c:1: error: stray '\357' in program
-ctrl_chirp.c:1: error: stray '\273' in program
-ctrl_chirp.c:1: error: stray '\277' in program
-ctrl_chirp.c:1: error: stray '#' in program
-ctrl_chirp.c:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '<' token
-In file included from ctrl_chirp.c:20:
-ctrl_chirp.h:1: error: stray '\357' in program
-ctrl_chirp.h:1: error: stray '\273' in program
-ctrl_chirp.h:1: error: stray '\277' in program
-ctrl_chirp.h:1: error: stray '#' in program
-In file included from ctrl_chirp.c:20:
-ctrl_chirp.h:11:2: error: #endif without #if
-ctrl_chirp.h:11:7: warning: no newline at end of file
-make: *** [ctrl_chirp.o] Error 1
+ctrl_chirp.c:29:12: warning: initializer element is not a constant expression
+ double k = pow(1.0*FF/F0, 1.0/LEN); // rate of frequency change
+            ^

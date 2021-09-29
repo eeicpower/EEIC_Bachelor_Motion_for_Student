@@ -1,5 +1,0 @@
-hardw_cdrv.c:62:3: warning: no newline at end of file
-/usr/local/bin/../lib/gcc/powerpc-405-linux-gnu/4.2.2/../../../../powerpc-405-linux-gnu/bin/ld: skipping incompatible /usr/local/dtlibs/libppmac/libppmac.so when searching for -lppmac
-/usr/local/bin/../lib/gcc/powerpc-405-linux-gnu/4.2.2/../../../../powerpc-405-linux-gnu/bin/ld: cannot find -lppmac
-collect2: ld returned 1 exit status
-make: *** [../../../Bin/Debug/libhardw_cdrv.so] Error 1

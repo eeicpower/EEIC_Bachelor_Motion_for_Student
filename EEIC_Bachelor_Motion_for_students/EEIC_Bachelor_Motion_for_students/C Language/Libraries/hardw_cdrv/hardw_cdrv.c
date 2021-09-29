@@ -45,10 +45,10 @@ void hardw_trqref(double trqref)
 	
 	// saturation
 	if (trqref > TRQ_MAX){
-    trqref = TRQ_MAX;
+        trqref = TRQ_MAX;
 	} else if (trqref < -TRQ_MAX) {
 		trqref = -TRQ_MAX;
 	}
 
-	MyGate3->Chan[0].Dac[0] = (int)(trqref / TRQ_CONST * MAX_VAL) << 16;
+	MyGate3->Chan[0].Dac[0] = (int)(trqref / TRQ_CONST / 10.0 * MAX_VAL) << 16;
 }

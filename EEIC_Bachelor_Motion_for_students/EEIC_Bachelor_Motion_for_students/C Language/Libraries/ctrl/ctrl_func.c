@@ -19,7 +19,6 @@
 #include "ctrl_func.h"
 
 volatile TF2_INF		gstCpidInf[1];
-volatile TF2_INF		gstCpidAWUInf[1];
 volatile TF2_INF		gstObsBlk1Inf[1];
 volatile TF2_INF		gstObsBlk2Inf[1];
 volatile TF2_INF		gstLPFInf[1];
@@ -41,25 +40,14 @@ void	func_TF2StateInit( volatile TF2_INF *stpInf )
 	stpInf->dOutPre[1] = 0.0;
 }
 
-// Matlabで設計した離散時間PID制御器のパラメータをctrl_func.hに入力。
-
-//AWUなしのPID制御
+// Matlabで設計した離散時間PID制御器のパラメータを入力。
 void func_CpidParaInit( volatile TF2_INF *stpInf ){
-	stpInf->dB[0] = Cz_b0;
-    stpInf->dB[1] = Cz_b1; 
-	stpInf->dB[2] = Cz_b2; 
-	stpInf->dA[0] = 1.0;
-    stpInf->dA[1] = Cz_a1;
-	stpInf->dA[2] = Cz_a2;
-}
-//AWUありのPID制御
-void func_CpidAWUParaInit(volatile TF2_INF *stpInf){//Wakui AWU
 	stpInf->dB[0] = 0.0;
-	stpInf->dB[1] = Cz_a1-Cz_b1/Cz_b0;
-	stpInf->dB[2] = Cz_a2-Cz_b2/Cz_b0;
-	stpInf->dA[0] = 1.0;
-	stpInf->dA[1] = Cz_b1/Cz_b0;
-	stpInf->dA[2] = Cz_b2/Cz_b0;
+    stpInf->dB[1] = 0.0; 
+	stpInf->dB[2] = 0.0; 
+	stpInf->dA[0] = 0.0;
+    stpInf->dA[1] = 0.0;
+	stpInf->dA[2] = 0.0;
 }
 
 // Matlabで設計した離散時間PD制御器のパラメータを入力。
@@ -71,12 +59,12 @@ void func_CpdParaInit(volatile TF1_INF *stpInf){// 10Hz PD
 }
 
 void	func_LPFParaInit( volatile TF2_INF *stpInf ){//200Hz LPF for 発展課題2
-	stpInf->dB[0] = 0.1628;
-    stpInf->dB[1] = 0.3256; 
-	stpInf->dB[2] = 0.1628; 
-	stpInf->dA[0] = 1.0;
-    stpInf->dA[1] = -0.4991;
-	stpInf->dA[2] = 0.1502;
+	stpInf->dB[0] = 0.0;
+    stpInf->dB[1] = 0.0; 
+	stpInf->dB[2] = 0.0; 
+	stpInf->dA[0] = 0.0;
+    stpInf->dA[1] = 0.0;
+	stpInf->dA[2] = 0.0;
 }
 
 // Matlabで設計した外乱オブザーバ用ローパスフィルタのパラメータを入力。
@@ -131,7 +119,7 @@ double	func_TF2Exe( double dIn, volatile TF2_INF *stpInf)
 	
 	return dOut;
 }
-/*
+
 double	func_TF2Exe_AntiWindUp( double dIn, volatile TF2_INF *stpInf, double dLimit_low, double dLimit_high)
 {
 	double	dOut;
@@ -156,4 +144,3 @@ double	func_TF2Exe_AntiWindUp( double dIn, volatile TF2_INF *stpInf, double dLim
 	
 	return dOut;
 }
-*/

@@ -18,15 +18,23 @@
 #define _PP_PROJ_HDR_
 #include "../../Include/pp_proj.h"
 #include "ctrl_chirp.h"
+#include <math.h>
 
-double	k = (ff - f0) / t_c;	// rate of frequency change
+// チャープサインの式に使える定数集
+#define F0 (0.1)  //initial frequency[Hz]
+#define FF (500)  //final frequency [Hz]
+#define AMP (1)   //amplitude [Nm]
+#define LEN (20)  //chirptime [s]
 
-void ctrl_chirp(double t_ch, double *out){
-	while(t_ch > t_c){
-		t_ch -=t_c;
+double k = pow(1.0*FF/F0, 1.0/LEN);	// rate of frequency change
+double phi = 0;
+
+void ctrl_chirp(double timer, double *out){
+	while(timer > LEN){
+		timer -= LEN;
 	}
 	// ここにチャープの式を書く。
-	// チャープに使う定数はctrl_chirp.hに定義されているので、そちらも参照せよ。
-	*out=0;
-
+	// See English Wikipedia
+	phi = 2 * M_PI * F0 * (pow(k,timer)-1) / log(k); //[rad]
+	*out = AMP * sin(phi);
 }
