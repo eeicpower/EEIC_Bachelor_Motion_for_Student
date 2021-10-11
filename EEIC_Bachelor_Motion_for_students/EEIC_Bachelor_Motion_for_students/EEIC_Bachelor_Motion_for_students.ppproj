@@ -39,7 +39,7 @@
     <PPCPUType>armv71-4.1.18;4.1.18-ipipe</PPCPUType>
     <DownloadSystemSetupConfig>No</DownloadSystemSetupConfig>
     <UseNewNamingFormat>No</UseNewNamingFormat>
-    <ProjectFrimwareVers>2.4.1.6</ProjectFrimwareVers>
+    <ProjectFrimwareVers>2.4.1.2</ProjectFrimwareVers>
     <CPUType>arm,LS1021A</CPUType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -62,6 +62,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="C Language\Libraries\ctrl\ctrl_func.c">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="C Language\Libraries\ctrl\ctrl_math.c">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="C Language\Libraries\ctrl\ctrl_step.c">
@@ -99,6 +102,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="C Language\Libraries\ctrl\ctrl_func.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Libraries\ctrl\ctrl_math.h">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="C Language\Libraries\ctrl\ctrl_para.h">
       <SubType>Content</SubType>
     </Content>
     <Content Include="C Language\Libraries\ctrl\ctrl_step.h">

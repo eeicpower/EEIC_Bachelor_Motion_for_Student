@@ -274,6 +274,7 @@ PROG = ../../../Bin/Debug/libctrl.so
 SRCS = \
 ctrl_chirp.c\
 ctrl_func.c\
+ctrl_math.c\
 ctrl_step.c
 
 OBJS = $(SRCS:.c=.o)
