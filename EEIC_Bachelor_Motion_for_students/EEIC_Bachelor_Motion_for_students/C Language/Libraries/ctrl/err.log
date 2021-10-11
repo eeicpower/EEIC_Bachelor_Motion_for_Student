@@ -1,3 +1,0 @@
-ctrl_chirp.c:29:12: warning: initializer element is not a constant expression
- double k = pow(1.0*FF/F0, 1.0/LEN); // rate of frequency change
-            ^
